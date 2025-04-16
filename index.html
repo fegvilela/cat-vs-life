@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gatinho Herói</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f9f4e8;
+            overflow: hidden;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 4px solid #8a6d3b;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        #intro-screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #fff8e8;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        #dialogue-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 3px solid #8a6d3b;
+            border-radius: 10px;
+            padding: 15px;
+            width: 90%;
+            margin: 10px auto;
+            font-size: 18px;
+            position: relative;
+        }
+        
+        .char-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #8a6d3b;
+            margin: 10px;
+        }
+        
+        #cat-image {
+            background-color: #f0c869;
+        }
+        
+        #owner-image {
+            background-color: #a0c4ff;
+        }
+        
+        #start-button {
+            background-color: #ff7e5f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        #start-button:hover {
+            transform: scale(1.05);
+        }
+        
+        #game-world {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to bottom, #a0d8ef, #c7e5f5);
+            display: none;
+        }
+        
+        #floor {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #8a6d3b;
+        }
+        
+        #player {
+            position: absolute;
+            width: 60px;
+            height: 40px; 
+            bottom: 50px;
+            left: 50px;
+            background-color: #ff9e00;
+            border-radius: 20px 20px 15px 15px;
+            z-index: 5;
+            transition: transform 0.2s;
+        }
+        
+        .cat-ear {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #ff9e00;
+            top: -15px;
+        }
+        
+        #ear-left {
+            left: 5px;
+            transform: rotate(-20deg);
+        }
+        
+        #ear-right {
+            right: 5px;
+            transform: rotate(20deg);
+        }
+        
+        .cat-eye {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 10px;
+        }
+        
+        #eye-left {
+            left: 15px;
+        }
+        
+        #eye-right {
+            right: 15px;
+        }
+        
+        .cat-paw {
+            position: absolute;
+            width: 12px;
+            height: 8px;
+            background-color: #e06c00;
+            border-radius: 50%;
+            bottom: -5px;
+        }
+        
+        #paw-left {
+            left: 10px;
+        }
+        
+        #paw-right {
+            right: 10px;
+        }
+        
+        .enemy {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background-color: #ff5252;
+            bottom: 50px;
+            border-radius: 5px;
+        }
+        
+        .bill {
+            background-color: #4CAF50;
+            height: 40px;
+            width: 30px;
+            border-radius: 0;
+        }
+        
+        .bad-coworker {
+            background-color: #673AB7;
+            height: 70px;
+        }
+        
+        .machismo {
+            background-color: #FF5722;
+            height: 65px;
+        }
+        
+        .housework {
+            background-color: #2196F3;
+            height: 50px;
+            width: 50px;
+        }
+        
+        .depression {
+            background-color: #607D8B;
+            height: 30px;
+            width: 80px;
+            border-radius: 40px;
+        }
+        
+        .projectile {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #f8d188;
+            z-index: 4;
+        }
+        
+        .meow-attack {
+            position: absolute;
+            font-size: 24px;
+            color: #8a6d3b;
+            font-weight: bold;
+            z-index: 4;
+        }
+        
+        #game-ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+            z-index: 3;
+        }
+        
+        #game-over {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            text-align: center;
+        }
+        
+        #restart-button {
+            background-color: #ff7e5f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        #restart-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="intro-screen">
+            <h1>Gatinho Herói</h1>
+            <div style="display: flex; justify-content: center;">
+                <div id="cat-image" class="char-img"></div>
+                <div id="owner-image" class="char-img"></div>
+            </div>
+            <div id="dialogue-box">
+                <p id="dialogue-text">Olá! Minha tutora está passando por muitas dificuldades na vida adulta. 
+                   Boletos, pessoas ruins no trabalho, machismo, tarefas domésticas e depressão... 
+                   Como um bom gatinho, preciso ajudá-la a enfrentar esses problemas!</p>
+            </div>
+            <button id="start-button">Iniciar Aventura</button>
+        </div>
+        
+        <div id="game-world">
+            <div id="floor"></div>
+            <div id="player">
+                <div class="cat-ear" id="ear-left"></div>
+                <div class="cat-ear" id="ear-right"></div>
+                <div class="cat-eye" id="eye-left"></div>
+                <div class="cat-eye" id="eye-right"></div>
+                <div class="cat-paw" id="paw-left"></div>
+                <div class="cat-paw" id="paw-right"></div>
+            </div>
+            <div id="game-ui">
+                Pontuação: <span id="score">0</span>
+            </div>
+        </div>
+        
+        <div id="game-over">
+            <h2>Game Over</h2>
+            <p>Sua pontuação final: <span id="final-score">0</span></p>
+            <button id="restart-button">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis do jogo
+        let gameStarted = false;
+        let gameOver = false;
+        let score = 0;
+        let enemySpeed = 4;
+        let jumpForce = 12;
+        let gravity = 0.6;
+        let isJumping = false;
+        let playerVelocityY = 0;
+        let enemies = [];
+        let projectiles = [];
+        let attackCooldown = 0;
+        let playerPosition = { x: 50, y: 50 };
+        
+        // Diálogos de introdução
+        const dialogues = [
+            "Olá! Minha tutora está passando por muitas dificuldades na vida adulta. Boletos, pessoas ruins no trabalho, machismo, tarefas domésticas e depressão...",
+            "Como um bom gatinho, preciso ajudá-la a enfrentar esses problemas!",
+            "Ela sempre cuidou de mim, agora é minha vez de retribuir!",
+            "Use as teclas A e D para me mover, ESPAÇO para pular, e J, K, L para diferentes ataques!",
+            "Vamos lá, pelos bigodes dos gatos ancestrais, eu vou ajudá-la!"
+        ];
+        
+        let dialogueIndex = 0;
+        const dialogueText = document.getElementById('dialogue-text');
+        
+        // Elementos do DOM
+        const gameContainer = document.getElementById('game-container');
+        const introScreen = document.getElementById('intro-screen');
+        const gameWorld = document.getElementById('game-world');
+        const player = document.getElementById('player');
+        const startButton = document.getElementById('start-button');
+        const gameOverScreen = document.getElementById('game-over');
+        const restartButton = document.getElementById('restart-button');
+        const scoreDisplay = document.getElementById('score');
+        const finalScoreDisplay = document.getElementById('final-score');
+        
+        // Controles do teclado
+        const keys = {
+            a: false,
+            d: false,
+            space: false,
+            j: false, // Ataque com unhas
+            k: false, // Bola de pelo
+            l: false  // Miar
+        };
+        
+        // Tipos de inimigos
+        const enemyTypes = ['bill', 'bad-coworker', 'machismo', 'housework', 'depression'];
+        
+        // Eventos de clique nos botões
+        startButton.addEventListener('click', () => {
+            if (dialogueIndex < dialogues.length - 1) {
+                dialogueIndex++;
+                dialogueText.textContent = dialogues[dialogueIndex];
+            } else {
+                startGame();
+            }
+        });
+        
+        restartButton.addEventListener('click', restartGame);
+        
+        // Eventos de teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'a') keys.a = true;
+            if (e.key === 'd') keys.d = true;
+            if (e.key === ' ') keys.space = true;
+            if (e.key === 'j') keys.j = true;
+            if (e.key === 'k') keys.k = true;
+            if (e.key === 'l') keys.l = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'a') keys.a = false;
+            if (e.key === 'd') keys.d = false;
+            if (e.key === ' ') keys.space = false;
+            if (e.key === 'j') keys.j = false;
+            if (e.key === 'k') keys.k = false;
+            if (e.key === 'l') keys.l = false;
+        });
+        
+        // Funções do jogo
+        function startGame() {
+            introScreen.style.display = 'none';
+            gameWorld.style.display = 'block';
+            gameStarted = true;
+            gameOver = false;
+            score = 0;
+            enemies = [];
+            projectiles = [];
+            
+            // Posição inicial do jogador
+            player.style.bottom = '50px';
+            player.style.left = '50px';
+            playerPosition = { x: 50, y: 50 };
+            
+            // Inicia o loop do jogo
+            requestAnimationFrame(gameLoop);
+            
+            // Inicia o spawn de inimigos
+            spawnEnemies();
+        }
+        
+        function restartGame() {
+            gameOverScreen.style.display = 'none';
+            startGame();
+        }
+        
+        function endGame() {
+            gameStarted = false;
+            gameOver = true;
+            finalScoreDisplay.textContent = score;
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        function gameLoop() {
+            if (!gameStarted || gameOver) return;
+            
+            // Movimentação do jogador
+            if (keys.a && playerPosition.x > 10) {
+                playerPosition.x -= 5;
+                player.style.transform = 'scaleX(-1)';
+            }
+            if (keys.d && playerPosition.x < gameContainer.offsetWidth - 70) {
+                playerPosition.x += 5;
+                player.style.transform = 'scaleX(1)';
+            }
+            
+            // Pulo
+            if (keys.space && !isJumping) {
+                isJumping = true;
+                playerVelocityY = jumpForce;
+            }
+            
+            // Física do pulo
+            playerVelocityY -= gravity;
+            playerPosition.y += playerVelocityY;
+            
+            // Verificação do chão
+            if (playerPosition.y <= 50) {
+                playerPosition.y = 50;
+                playerVelocityY = 0;
+                isJumping = false;
+            }
+            
+            // Atualiza posição do jogador
+            player.style.bottom = playerPosition.y + 'px';
+            player.style.left = playerPosition.x + 'px';
+            
+            // Gerencia ataques
+            if (attackCooldown > 0) {
+                attackCooldown--;
+            } else {
+                if (keys.j) {
+                    createScratchAttack();
+                    attackCooldown = 30;
+                } else if (keys.k) {
+                    createHairballAttack();
+                    attackCooldown = 45;
+                } else if (keys.l) {
+                    createMeowAttack();
+                    attackCooldown = 60;
+                }
+            }
+            
+            // Movimenta inimigos
+            moveEnemies();
+            
+            // Movimenta projéteis
+            moveProjectiles();
+            
+            // Verificação de colisões
+            checkCollisions();
+            
+            // Atualiza pontuação
+            scoreDisplay.textContent = score;
+            
+            // Continua o loop
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function spawnEnemies() {
+            if (gameOver) return;
+            
+            // Seleciona um tipo aleatório de inimigo
+            const enemyType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+            
+            // Cria o elemento do inimigo
+            const enemy = document.createElement('div');
+            enemy.className = `enemy ${enemyType}`;
+            enemy.style.left = `${gameContainer.offsetWidth}px`;
+            gameWorld.appendChild(enemy);
+            
+            // Adiciona à lista de inimigos
+            enemies.push({
+                element: enemy,
+                type: enemyType,
+                x: gameContainer.offsetWidth,
+                width: enemy.offsetWidth,
+                height: enemy.offsetHeight
+            });
+            
+            // Aumenta a velocidade com base na pontuação
+            const spawnTime = Math.max(800, 2000 - score * 10);
+            
+            // Agenda o próximo spawn
+            setTimeout(spawnEnemies, spawnTime);
+        }
+        
+        function moveEnemies() {
+            // Aumenta a velocidade com base na pontuação
+            const currentSpeed = enemySpeed + Math.min(5, score / 500);
+            
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const enemy = enemies[i];
+                enemy.x -= currentSpeed;
+                enemy.element.style.left = `${enemy.x}px`;
+                
+                // Remove inimigos que saíram da tela
+                if (enemy.x < -50) {
+                    gameWorld.removeChild(enemy.element);
+                    enemies.splice(i, 1);
+                    score += 10;
+                }
+            }
+        }
+        
+        function createScratchAttack() {
+            // Cria um projétil de arranhão
+            const projectile = document.createElement('div');
+            projectile.className = 'projectile';
+            projectile.style.backgroundColor = '#ff6b6b';
+            projectile.style.width = '30px';
+            projectile.style.height = '10px';
+            
+            const direction = player.style.transform === 'scaleX(-1)' ? -1 : 1;
+            const startX = direction > 0 ? playerPosition.x + 60 : playerPosition.x - 30;
+            
+            projectile.style.left = `${startX}px`;
+            projectile.style.bottom = `${playerPosition.y + 20}px`;
+            gameWorld.appendChild(projectile);
+            
+            projectiles.push({
+                element: projectile,
+                x: startX,
+                y: playerPosition.y + 20,
+                direction: direction,
+                speed: 10,
+                type: 'scratch',
+                width: 30,
+                height: 10
+            });
+        }
+        
+        function createHairballAttack() {
+            // Cria um projétil de bola de pelo
+            const projectile = document.createElement('div');
+            projectile.className = 'projectile';
+            
+            const direction = player.style.transform === 'scaleX(-1)' ? -1 : 1;
+            const startX = direction > 0 ? playerPosition.x + 60 : playerPosition.x - 20;
+            
+            projectile.style.left = `${startX}px`;
+            projectile.style.bottom = `${playerPosition.y + 20}px`;
+            gameWorld.appendChild(projectile);
+            
+            projectiles.push({
+                element: projectile,
+                x: startX,
+                y: playerPosition.y + 20,
+                direction: direction,
+                speed: 7,
+                type: 'hairball',
+                width: 20,
+                height: 20
+            });
+        }
+        
+        function createMeowAttack() {
+            // Cria um efeito de miado
+            const meow = document.createElement('div');
+            meow.className = 'meow-attack';
+            meow.textContent = 'MIAU!';
+            
+            const direction = player.style.transform === 'scaleX(-1)' ? -1 : 1;
+            const startX = direction > 0 ? playerPosition.x + 60 : playerPosition.x - 60;
+            
+            meow.style.left = `${startX}px`;
+            meow.style.bottom = `${playerPosition.y + 20}px`;
+            gameWorld.appendChild(meow);
+            
+            projectiles.push({
+                element: meow,
+                x: startX,
+                y: playerPosition.y + 20,
+                direction: direction,
+                speed: 5,
+                type: 'meow',
+                width: 60,
+                height: 30
+            });
+            
+            // Efeito de ampliação
+            let size = 1;
+            const growInterval = setInterval(() => {
+                size += 0.1;
+                meow.style.transform = `scale(${size})`;
+                
+                if (size >= 2) {
+                    clearInterval(growInterval);
+                    setTimeout(() => {
+                        if (meow.parentNode === gameWorld) {
+                            gameWorld.removeChild(meow);
+                            const index = projectiles.findIndex(p => p.element === meow);
+                            if (index !== -1) {
+                                projectiles.splice(index, 1);
+                            }
+                        }
+                    }, 300);
+                }
+            }, 50);
+        }
+        
+        function moveProjectiles() {
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const projectile = projectiles[i];
+                projectile.x += projectile.direction * projectile.speed;
+                projectile.element.style.left = `${projectile.x}px`;
+                
+                // Remove projéteis que saíram da tela
+                if (projectile.x < -100 || projectile.x > gameContainer.offsetWidth + 100) {
+                    if (projectile.element.parentNode === gameWorld) {
+                        gameWorld.removeChild(projectile.element);
+                    }
+                    projectiles.splice(i, 1);
+                }
+            }
+        }
+        
+        function checkCollisions() {
+            // Colisão jogador com inimigos
+            const playerRect = {
+                x: playerPosition.x,
+                y: playerPosition.y,
+                width: player.offsetWidth - 10,
+                height: player.offsetHeight - 10
+            };
+            
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const enemy = enemies[i];
+                const enemyRect = {
+                    x: enemy.x,
+                    y: 50,
+                    width: enemy.width,
+                    height: enemy.height
+                };
+                
+                // Verifica colisão jogador-inimigo
+                if (checkRectCollision(playerRect, enemyRect)) {
+                    endGame();
+                    return;
+                }
+                
+                // Verifica colisão projétil-inimigo
+                for (let j = projectiles.length - 1; j >= 0; j--) {
+                    const projectile = projectiles[j];
+                    const projectileRect = {
+                        x: projectile.x,
+                        y: projectile.y,
+                        width: projectile.width,
+                        height: projectile.height
+                    };
+                    
+                    if (checkRectCollision(projectileRect, enemyRect)) {
+                        // Remove o inimigo
+                        gameWorld.removeChild(enemy.element);
+                        enemies.splice(i, 1);
+                        
+                        // Remove o projétil para ataques de arranhão e bola de pelo
+                        if (projectile.type !== 'meow') {
+                            gameWorld.removeChild(projectile.element);
+                            projectiles.splice(j, 1);
+                        }
+                        
+                        // Adiciona pontos
+                        score += 25;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        function checkRectCollision(rect1, rect2) {
+            return (
+                rect1.x < rect2.x + rect2.width &&
+                rect1.x + rect1.width > rect2.x &&
+                rect1.y < rect2.y + rect2.height &&
+                rect1.y + rect1.height > rect2.y
+            );
+        }
+    </script>
+</body>
+</html>
