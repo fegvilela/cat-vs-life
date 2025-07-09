@@ -27,3 +27,16 @@ cat_guardian_game/
 │   └── world/            # Mapa, objetos do cenário  
 │       ├── level.py      # Gerenciador de fases  
 │       └── tile.py       # Tiles do cenário (opcional)  
+
+
+Separação de Responsabilidades: Cada classe/funcionalidade tem um propósito claro.
+
+Escalável: Fácil adicionar novos estados (menu, pause), inimigos, mecânicas.
+
+Boas Práticas:
+
+Delta time (dt) para movimentos independentes de FPS.
+
+Assets carregados em um único lugar (asset_loader.py).
+
+Quer que eu desenvolva alguma parte específica (ex.: inimigos, cutscene, HUD)? 😊
