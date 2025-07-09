@@ -1,6 +1,7 @@
 import pygame
 from entities.cat import Cat
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
+from world.level import Level
 
 class PlayState:
     def __init__(self, game):
@@ -8,6 +9,9 @@ class PlayState:
         self.all_sprites = pygame.sprite.Group()
 	self.enemies = pygame.sprite.Group()
 	self.spawn_timer = 0
+
+	#world
+	self.level = Level()
         
         # Cria o gato no centro da tela
         self.cat = Cat(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
@@ -41,3 +45,4 @@ class PlayState:
     def render(self, screen):
         screen.fill((135, 206, 235))  # Cor de fundo (céu)
         self.all_sprites.draw(screen)
+	self.level.draw(screen) #world
