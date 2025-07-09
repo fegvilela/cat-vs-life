@@ -2,6 +2,7 @@ import pygame
 from entities.cat import Cat
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from world.level import Level
+from utils.hud import HUD
 
 class PlayState:
     def __init__(self, game):
@@ -9,6 +10,9 @@ class PlayState:
         self.all_sprites = pygame.sprite.Group()
 	self.enemies = pygame.sprite.Group()
 	self.spawn_timer = 0
+
+	#hud
+	self.hud = HUD(self.cat)
 
 	#world
 	self.level = Level()
@@ -46,3 +50,4 @@ class PlayState:
         screen.fill((135, 206, 235))  # Cor de fundo (céu)
         self.all_sprites.draw(screen)
 	self.level.draw(screen) #world
+	self.hud.draw(screen) #hud
