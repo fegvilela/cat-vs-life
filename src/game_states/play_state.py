@@ -14,6 +14,10 @@ class PlayState:
         self.all_sprites.add(self.cat)
     
     def handle_events(self, event):
+	# No handle_events do PlayState, modifique os ataques:
+	if event.key == pygame.K_m:
+    		self.cat.attack("meow")
+    		check_attack([self.cat], self.enemies)  # Exemplo simplificado
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_m: self.cat.attack("meow")
             if event.key == pygame.K_a: self.cat.attack("scratch")
