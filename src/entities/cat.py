@@ -8,7 +8,8 @@ class Cat(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = 5
         self.hp = 100
-        
+ 
+       
         # Ataques
         self.attacks = {
             "meow": {"damage": 10, "cooldown": 1.0},
@@ -26,5 +27,6 @@ class Cat(pygame.sprite.Sprite):
     
     def attack(self, attack_type):
         if attack_type in self.attacks:
-            print(f"Cat used {attack_type}! Damage: {self.attacks[attack_type]['damage']}")
+            self.game.audio.play_sound(attack_type)  # Adicione esta linha
+	    print(f"Cat used {attack_type}! Damage: {self.attacks[attack_type]['damage']}")
             # Lógica de cooldown/dano aqui

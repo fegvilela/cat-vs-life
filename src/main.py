@@ -9,6 +9,10 @@ class Game:
         pygame.display.set_caption("Cat Guardian")
         self.clock = pygame.time.Clock()
         self.running = True
+
+	#audio
+	self.audio = AudioManager()
+	self.audio.play_music()
         
         # Gerenciador de estados (inicia com o estado de jogo)
 	self.current_state = CutsceneState(self)
