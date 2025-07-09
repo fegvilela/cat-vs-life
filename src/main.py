@@ -11,7 +11,7 @@ class Game:
         self.running = True
         
         # Gerenciador de estados (inicia com o estado de jogo)
-        self.current_state = PlayState(self)
+	self.current_state = CutsceneState(self)
 
     def run(self):
         while self.running:
