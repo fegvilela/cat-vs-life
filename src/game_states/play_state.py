@@ -3,6 +3,7 @@ from entities.cat import Cat
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from world.level import Level
 from utils.hud import HUD
+from utils.save_manager import SaveManager
 
 class PlayState:
     def __init__(self, game):
@@ -20,6 +21,9 @@ class PlayState:
         # Cria o gato no centro da tela
         self.cat = Cat(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.all_sprites.add(self.cat)
+
+	#save manager
+	self.save_manager = SaveManager()
     
     def handle_events(self, event):
 	# No handle_events do PlayState, modifique os ataques:
@@ -51,3 +55,12 @@ class PlayState:
         self.all_sprites.draw(screen)
 	self.level.draw(screen) #world
 	self.hud.draw(screen) #hud
+
+    # Método para salvar (chame quando necessário, ex.: derrota/vitória):
+    def save_progress(self):
+    	data = {
+        "level": 1,  # Exemplo
+        "cat_hp": self.cat.hp,
+        "enemies_defeated": 5  # Exemplo
+   	 }
+    	self.save_manager.save_game(data)
